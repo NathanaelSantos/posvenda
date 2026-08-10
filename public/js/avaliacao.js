@@ -52,6 +52,11 @@
     return el ? Number(el.value) : null;
   }
 
+  function gerarId() {
+    if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+    return `aval-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  }
+
   async function carregarConfig() {
     const cfgLocal = window.POSVENDA_CONFIG?.lojaConfig;
     if (cfgLocal) return cfgLocal;
@@ -149,6 +154,7 @@
     });
 
     const dados = {
+      id: gerarId(),
       loja,
       vendedor: document.getElementById('vendedor').value || '',
       satisfacao,

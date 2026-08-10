@@ -154,6 +154,31 @@ window.POSVENDA_CONFIG = {
 
 Nesse modo, a pÃ¡gina de avaliaÃ§Ã£o funciona no GitHub Pages sem VPS. O BI e login continuam dependendo de uma API prÃ³pria ou de uma futura integraÃ§Ã£o com a planilha.
 
+Use estes cabeÃ§alhos na planilha:
+
+```text
+id | criadoEm | loja | vendedor | satisfacao | notaVendedor | notaLoja | nps | criterios | feedback | nome | telefone
+```
+
+No Apps Script, salve o `id` na primeira coluna:
+
+```js
+sheet.appendRow([
+  body.id || Utilities.getUuid(),
+  new Date(),
+  body.loja || '',
+  body.vendedor || '',
+  body.satisfacao || '',
+  body.notaVendedor || '',
+  body.notaLoja || '',
+  body.nps || '',
+  JSON.stringify(body.criterios || {}),
+  body.feedback || '',
+  body.nome || '',
+  body.telefone || '',
+]);
+```
+
 ---
 
 ## 🗄️ Modelo de dados (PostgreSQL)
