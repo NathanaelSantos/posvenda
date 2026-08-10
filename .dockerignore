@@ -1,0 +1,11 @@
+node_modules
+data
+.git
+.gitignore
+*.md
+.env
+.env.*
+docs
+views
+pgdata
+**/.DS_Store

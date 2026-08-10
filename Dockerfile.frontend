@@ -1,0 +1,7 @@
+FROM nginx:1.27-alpine
+
+# Remove config padrão e aplica o proxy + estáticos do pós-venda
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY public/ /usr/share/nginx/html/
+
+EXPOSE 80

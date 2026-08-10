@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel de Pós-venda · Cred Móveis</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23b0824c'/%3E%3Ctext x='50' y='68' font-size='54' text-anchor='middle' fill='%23fbf7ef' font-family='Georgia,serif' font-weight='700'%3EC%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main class="container container-larga">
+    <div class="topbar">
+      <header class="marca" style="margin-bottom:0">
+        <img class="marca-logo" src="img/logo.png" alt="Cred Móveis" />
+        <div>
+          <div class="marca-nome">Painel de Pós-venda</div>
+          <div class="marca-sub" id="marcaSub">Cred Móveis · Itabaiana</div>
+        </div>
+      </header>
+      <div class="topbar-acoes">
+        <a href="loja.html" class="btn btn-secundario btn-sm">← Área da Loja</a>
+        <a href="qrcode.html" class="btn btn-secundario btn-sm">Gerar QR Code</a>
+        <a href="#" class="btn btn-secundario btn-sm" id="exportCsv">⬇ Exportar CSV</a>
+        <button class="btn btn-secundario btn-sm" id="btnConfig">⚙ Configurações</button>
+        <button class="btn btn-fantasma btn-sm" id="btnSair">Sair</button>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filtros">
+      <div class="filtro-item">
+        <label for="fLoja">Loja</label>
+        <select id="fLoja"><option value="">Todas as lojas</option></select>
+      </div>
+      <div class="filtro-item">
+        <label for="fVendedor">Vendedor</label>
+        <select id="fVendedor"><option value="">Todos os vendedores</option></select>
+      </div>
+      <div class="filtro-item">
+        <label for="fPeriodo">Período</label>
+        <select id="fPeriodo">
+          <option value="0">Todo o período</option>
+          <option value="7">Últimos 7 dias</option>
+          <option value="30" selected>Últimos 30 dias</option>
+          <option value="90">Últimos 90 dias</option>
+          <option value="365">Último ano</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpis" id="kpis"></div>
+
+    <!-- Painéis -->
+    <div class="grade">
+      <div class="painel span-8">
+        <h3>Satisfação ao longo do tempo</h3>
+        <div class="painel-sub">Média diária da satisfação geral (1 a 5)</div>
+        <div id="graficoTempo"></div>
+      </div>
+
+      <div class="painel span-4">
+        <h3>NPS · Recomendação</h3>
+        <div class="painel-sub">Promotores, neutros e detratores</div>
+        <div id="graficoNps"></div>
+      </div>
+
+      <div class="painel span-6">
+        <h3>Distribuição da satisfação</h3>
+        <div class="painel-sub">Quantidade de avaliações por nota</div>
+        <div id="graficoDistrib"></div>
+      </div>
+
+      <div class="painel span-6">
+        <h3>Notas por critério</h3>
+        <div class="painel-sub">Média de cada ponto avaliado (1 a 5)</div>
+        <div id="graficoCriterios"></div>
+      </div>
+
+      <div class="painel span-6">
+        <h3>Ranking de vendedores</h3>
+        <div class="painel-sub">Nota média do vendedor · nº de avaliações</div>
+        <div id="graficoVendedores"></div>
+      </div>
+
+      <div class="painel span-6">
+        <h3>Comparação de lojas</h3>
+        <div class="painel-sub">Satisfação média por unidade</div>
+        <div id="graficoLojas"></div>
+      </div>
+
+      <div class="painel span-12">
+        <h3>Comentários recentes</h3>
+        <div class="painel-sub">O que os clientes escreveram</div>
+        <div id="comentarios" class="comentarios"></div>
+      </div>
+    </div>
+
+    <p class="rodape">Painel interno · Cred Móveis Itabaiana — atualizado em <span id="atualizadoEm">—</span></p>
+  </main>
+
+  <!-- Modal de configurações -->
+  <div id="modalConfig" style="display:none;position:fixed;inset:0;background:rgba(67,51,31,.45);z-index:50;padding:20px;overflow:auto">
+    <div class="card" style="max-width:560px;margin:4vh auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <h2 style="margin:0;font-size:20px">Configurações</h2>
+        <button class="icone-btn" id="fecharConfig" style="color:var(--marrom)">✕</button>
+      </div>
+
+      <div class="bloco">
+        <label class="campo-rot">Nome da loja</label>
+        <input type="text" id="cfgNome" />
+        <label class="campo-rot" style="margin-top:12px">Cidade</label>
+        <input type="text" id="cfgCidade" />
+        <label class="campo-rot" style="margin-top:12px">Slogan (aparece na avaliação)</label>
+        <input type="text" id="cfgSlogan" />
+      </div>
+
+      <div class="bloco">
+        <label class="campo-rot">Lojas / unidades</label>
+        <div class="lista-edit" id="listaLojas"></div>
+        <button class="btn btn-secundario btn-sm" id="addLoja" style="margin-top:10px">+ Adicionar loja</button>
+      </div>
+
+      <div class="bloco">
+        <label class="campo-rot">Vendedores</label>
+        <div class="lista-edit" id="listaVendedores"></div>
+        <button class="btn btn-secundario btn-sm" id="addVendedor" style="margin-top:10px">+ Adicionar vendedor</button>
+      </div>
+
+      <div id="avisoConfig" class="aviso"></div>
+      <button class="btn btn-primario" id="salvarConfig">Salvar alterações</button>
+    </div>
+  </div>
+
+  <script src="js/site-settings.js"></script>
+  <script src="js/app-config.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script src="js/bi.js"></script>
+</body>
+</html>

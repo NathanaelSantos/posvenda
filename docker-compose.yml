@@ -1,0 +1,68 @@
+services:
+  # ---------- Banco de dados ----------
+  db:
+    image: postgres:16-alpine
+    container_name: posvenda-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-posvenda}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-posvenda}
+      POSTGRES_DB: ${POSTGRES_DB:-posvenda}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-posvenda} -d ${POSTGRES_DB:-posvenda}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  # ---------- API (Node / Express) ----------
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: posvenda-backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-posvenda}:${POSTGRES_PASSWORD:-posvenda}@db:5432/${POSTGRES_DB:-posvenda}
+      PORT: 3000
+      SERVE_STATIC: "false"
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-credmoveis}
+      SESSION_SECRET: ${SESSION_SECRET:-troque-este-segredo-em-producao}
+    depends_on:
+      db:
+        condition: service_healthy
+    # Porta interna; o front faz proxy. Exposta só se quiser testar a API direto.
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+
+  # ---------- Front (nginx) ----------
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: posvenda-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  pgdata:

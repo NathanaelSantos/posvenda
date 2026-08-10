@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avaliação · Cred Móveis Itabaiana</title>
+  <meta name="description" content="Conte como foi sua experiência com a Cred Móveis Itabaiana." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23b0824c'/%3E%3Ctext x='50' y='68' font-size='54' text-anchor='middle' fill='%23fbf7ef' font-family='Georgia,serif' font-weight='700'%3EC%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main class="container">
+    <div class="topo-avaliacao">
+      <header class="marca" style="margin-bottom:0">
+        <img class="marca-logo" id="logo" src="img/logo.png" alt="Cred Móveis" />
+        <div>
+          <div class="marca-nome" id="marcaNome">Cred Móveis</div>
+          <div class="marca-sub" id="marcaCidade">Itabaiana</div>
+        </div>
+      </header>
+      <a href="login.html" class="link-area-loja">Área da Loja</a>
+    </div>
+
+    <div class="hero">
+      <h1>Como foi sua experiência?</h1>
+      <p id="slogan">Sua opinião ajuda a Cred Móveis a cuidar cada vez melhor de você. Leva menos de 2 minutos. 💛</p>
+    </div>
+
+    <form id="form" class="card" novalidate>
+      <!-- 1. Loja -->
+      <section class="bloco">
+        <div class="bloco-titulo"><span class="bloco-num">1</span> Onde você comprou?</div>
+        <p class="bloco-ajuda">Selecione a loja onde foi atendido.</p>
+        <div class="campo">
+          <select id="loja" name="loja" required>
+            <option value="" disabled selected>Escolha a loja…</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- 2. Satisfação geral + critérios -->
+      <section class="bloco">
+        <div class="bloco-titulo"><span class="bloco-num">2</span> Sua satisfação geral</div>
+        <p class="bloco-ajuda">De forma geral, o quanto você ficou satisfeito?</p>
+        <div id="estrelasSatisfacao" class="estrelas-grupo"></div>
+        <div class="estrelas-legenda" id="legendaSatisfacao"></div>
+
+        <div style="margin-top:22px">
+          <label class="campo-rot">E o que achou de cada ponto?</label>
+          <div id="criterios"></div>
+        </div>
+      </section>
+
+      <!-- 3. Vendedor -->
+      <section class="bloco">
+        <div class="bloco-titulo"><span class="bloco-num">3</span> Quem te atendeu?</div>
+        <p class="bloco-ajuda">Escolha o vendedor e dê uma nota para o atendimento dele.</p>
+        <div class="campo">
+          <select id="vendedor" name="vendedor">
+            <option value="" disabled selected>Escolha o vendedor…</option>
+          </select>
+        </div>
+        <div class="campo" style="margin-top:16px">
+          <label class="campo-rot">Nota para o vendedor</label>
+          <div id="estrelasVendedor"></div>
+        </div>
+      </section>
+
+      <!-- 4. Loja / ambiente -->
+      <section class="bloco">
+        <div class="bloco-titulo"><span class="bloco-num">4</span> E a nossa loja?</div>
+        <p class="bloco-ajuda">Organização, ambiente e experiência na loja.</p>
+        <div id="estrelasLoja"></div>
+      </section>
+
+      <!-- 5. NPS -->
+      <section class="bloco">
+        <div class="bloco-titulo"><span class="bloco-num">5</span> Você recomendaria a Cred Móveis?</div>
+        <p class="bloco-ajuda">De 0 a 10, o quanto indicaria para um amigo ou familiar.</p>
+        <div class="nps" id="nps"></div>
+        <div class="nps-legenda"><span>Não indicaria</span><span>Indicaria com certeza</span></div>
+      </section>
+
+      <!-- 6. Feedback + contato -->
+      <section class="bloco">
+        <div class="bloco-titulo"><span class="bloco-num">6</span> Quer deixar um recado? <span style="font-weight:400;font-size:13px;color:var(--marrom-suave)">(opcional)</span></div>
+        <p class="bloco-ajuda">Conte o que amou ou o que podemos melhorar.</p>
+        <div class="campo">
+          <textarea id="feedback" name="feedback" maxlength="2000" placeholder="Escreva aqui seu comentário…"></textarea>
+        </div>
+        <div class="campo">
+          <input type="text" id="nome" name="nome" maxlength="120" placeholder="Seu nome (opcional)" />
+        </div>
+        <div class="campo">
+          <input type="tel" id="telefone" name="telefone" maxlength="40" placeholder="Telefone / WhatsApp (opcional)" />
+        </div>
+      </section>
+
+      <div id="aviso" class="aviso"></div>
+      <button type="submit" class="btn btn-primario" id="btnEnviar">Enviar avaliação</button>
+    </form>
+
+    <p class="rodape">
+      Cred Móveis Itabaiana · Pós-venda &nbsp;•&nbsp; Seus dados são usados apenas para melhorar seu atendimento.
+    </p>
+  </main>
+
+  <script src="js/site-settings.js"></script>
+  <script src="js/app-config.js"></script>
+  <script src="js/avaliacao.js"></script>
+</body>
+</html>

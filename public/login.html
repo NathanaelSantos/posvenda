@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acesso ao painel · Cred Móveis</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23b0824c'/%3E%3Ctext x='50' y='68' font-size='54' text-anchor='middle' fill='%23fbf7ef' font-family='Georgia,serif' font-weight='700'%3EC%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main class="container login-wrap">
+    <header class="marca" style="justify-content:center">
+      <img class="marca-logo" src="img/logo.png" alt="Cred Móveis" />
+      <div>
+        <div class="marca-nome">Cred Móveis</div>
+        <div class="marca-sub">Painel de Pós-venda</div>
+      </div>
+    </header>
+
+    <form id="form" class="card">
+      <h1 style="font-size:22px;text-align:center;margin-bottom:6px">Área da Loja</h1>
+      <p style="text-align:center;font-size:14px;margin:0 0 22px">Entre para gerar o QR Code e acessar o painel de BI.</p>
+      <div class="campo">
+        <label class="campo-rot" for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" autocomplete="current-password" placeholder="••••••••" required autofocus />
+      </div>
+      <div id="aviso" class="aviso"></div>
+      <button type="submit" class="btn btn-primario" id="btn" style="margin-top:18px">Entrar</button>
+      <p style="text-align:center;margin-top:18px;font-size:13px"><a href="index.html">← Voltar para a avaliação</a></p>
+    </form>
+  </main>
+
+  <script src="js/site-settings.js"></script>
+  <script src="js/app-config.js"></script>
+  <script>
+    const form = document.getElementById('form');
+    const aviso = document.getElementById('aviso');
+    const btn = document.getElementById('btn');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      aviso.className = 'aviso';
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Entrando…';
+      try {
+        const resp = await AppUrls.fetchApi('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ senha: document.getElementById('senha').value }),
+        });
+        const json = await resp.json();
+        if (!resp.ok) throw new Error(json.erro || 'Erro ao entrar.');
+        window.location.href = AppUrls.page('loja');
+      } catch (err) {
+        btn.disabled = false;
+        btn.textContent = 'Entrar';
+        aviso.textContent = err.message;
+        aviso.className = 'aviso erro';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Área da Loja · Cred Móveis</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23b0824c'/%3E%3Ctext x='50' y='68' font-size='54' text-anchor='middle' fill='%23fbf7ef' font-family='Georgia,serif' font-weight='700'%3EC%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main class="container container-larga">
+    <div class="topbar">
+      <header class="marca" style="margin-bottom:0">
+        <img class="marca-logo" src="img/logo.png" alt="Cred Móveis" />
+        <div>
+          <div class="marca-nome">Área da Loja</div>
+          <div class="marca-sub" id="marcaSub">Cred Móveis · Pós-venda</div>
+        </div>
+      </header>
+      <div class="topbar-acoes">
+        <a href="index.html" class="btn btn-fantasma btn-sm" target="_blank" rel="noopener">Ver avaliação do cliente</a>
+        <button class="btn btn-fantasma btn-sm" id="btnSair">Sair</button>
+      </div>
+    </div>
+
+    <div class="hero" style="text-align:left;margin-bottom:28px">
+      <h1 style="font-size:28px">Ferramentas da equipe</h1>
+      <p style="max-width:540px">Gere o QR Code que leva o cliente ao site de avaliação e acompanhe os resultados no painel de BI.</p>
+    </div>
+
+    <div class="loja-grade">
+      <a href="qrcode.html" class="loja-card">
+        <h2>Gerar QR Code</h2>
+        <p>Crie o código que o cliente escaneia para abrir a avaliação no celular. Baixe PNG/SVG ou imprima o cartaz do balcão.</p>
+        <span class="loja-card-cta">Abrir gerador →</span>
+      </a>
+
+      <a href="bi.html" class="loja-card">
+        <h2>Painel de BI</h2>
+        <p>Veja satisfação, NPS, ranking de vendedores, comparação entre lojas, comentários e exporte as avaliações em CSV.</p>
+        <span class="loja-card-cta">Abrir painel →</span>
+      </a>
+    </div>
+
+    <div class="card loja-dica" style="margin-top:22px">
+      <h3 style="font-size:16px;margin-bottom:8px">Como usar na loja</h3>
+      <ol class="loja-passos">
+        <li>Gere o <strong>QR Code</strong> com o link público do site (ou o IP da rede, se estiver na Wi‑Fi da loja).</li>
+        <li>Imprima o cartaz e deixe no balcão / na entrega, ou envie o QR pelo WhatsApp após a compra.</li>
+        <li>Acompanhe as respostas no <strong>Painel de BI</strong> e ajuste o atendimento conforme o feedback.</li>
+      </ol>
+    </div>
+
+    <p class="rodape">Área interna · Cred Móveis Itabaiana</p>
+  </main>
+
+  <script src="js/site-settings.js"></script>
+  <script src="js/app-config.js"></script>
+  <script src="js/auth-guard.js"></script>
+  <script>
+    document.getElementById('btnSair').addEventListener('click', async () => {
+      await AppUrls.fetchApi('/api/logout', { method: 'POST' });
+      window.location.href = AppUrls.page('login');
+    });
+
+    AppUrls.fetchApi('/api/config')
+      .then((r) => r.json())
+      .then((cfg) => {
+        document.getElementById('marcaSub').textContent =
+          `${cfg.marca.nome} · ${cfg.marca.cidade}`;
+      })
+      .catch(() => {});
+  </script>
+</body>
+</html>

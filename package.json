@@ -1,0 +1,30 @@
+{
+  "name": "pos-venda-web",
+  "version": "1.0.0",
+  "description": "Site de pós-venda da Cred Móveis Itabaiana — avaliação de clientes, geração de QR Code e painel de BI.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "build:pages": "node scripts/build-pages.js",
+    "seed": "node scripts/seed.js",
+    "docker:up": "docker compose up --build -d",
+    "docker:down": "docker compose down",
+    "docker:seed": "docker compose exec backend node scripts/seed.js",
+    "docker:logs": "docker compose logs -f"
+  },
+  "keywords": [
+    "pos-venda",
+    "avaliacao",
+    "nps",
+    "cred-moveis"
+  ],
+  "author": "Cred Móveis Itabaiana",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^4.19.2",
+    "pg": "^8.22.0",
+    "qrcode": "^1.5.4"
+  }
+}
