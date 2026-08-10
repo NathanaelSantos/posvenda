@@ -108,8 +108,13 @@
       cfg.lojas.forEach((l) => opcao(selLoja, l));
       if (cfg.lojas.length === 1) { selLoja.value = cfg.lojas[0]; }
 
+      const blocoVendedor = document.getElementById('blocoVendedor');
       const selVend = document.getElementById('vendedor');
-      cfg.vendedores.forEach((v) => opcao(selVend, v));
+      if (Array.isArray(cfg.vendedores) && cfg.vendedores.length) {
+        cfg.vendedores.forEach((v) => opcao(selVend, v));
+      } else if (blocoVendedor) {
+        blocoVendedor.hidden = true;
+      }
 
       const cont = document.getElementById('criterios');
       cfg.criterios.forEach((c) => {

@@ -9,7 +9,7 @@ window.POSVENDA_CONFIG = {
       slogan: 'Moveis que fazem do seu lar um lugar melhor',
     },
     lojas: ['Itabaiana - Centro', 'Itabaiana - Avenida'],
-    vendedores: ['Ana Souza', 'Bruno Lima', 'Carla Menezes', 'Diego Santos'],
+    vendedores: [],
     criterios: [
       { id: 'atendimento', rotulo: 'Atendimento' },
       { id: 'produto', rotulo: 'Qualidade do produto' },
