@@ -52,6 +52,34 @@
     return el ? Number(el.value) : null;
   }
 
+  async function carregarConfig() {
+    const cfgLocal = window.POSVENDA_CONFIG?.lojaConfig;
+    if (cfgLocal) return cfgLocal;
+    return AppUrls.fetchApi('/api/config').then((r) => r.json());
+  }
+
+  async function enviarAvaliacao(dados) {
+    const sheetsEndpoint = window.POSVENDA_CONFIG?.sheetsEndpoint;
+    if (sheetsEndpoint) {
+      await fetch(sheetsEndpoint, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(dados),
+      });
+      return { ok: true };
+    }
+
+    const resp = await AppUrls.fetchApi('/api/avaliacoes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dados),
+    });
+    const json = await resp.json();
+    if (!resp.ok) throw new Error(json.erro || 'Erro ao enviar.');
+    return json;
+  }
+
   async function iniciar() {
     // Estrelas fixas
     const legenda = document.getElementById('legendaSatisfacao');
@@ -64,7 +92,7 @@
 
     // Configuração da loja
     try {
-      const cfg = await AppUrls.fetchApi('/api/config').then((r) => r.json());
+      const cfg = await carregarConfig();
       document.getElementById('marcaNome').textContent = cfg.marca.nome;
       document.getElementById('marcaCidade').textContent = cfg.marca.cidade;
       document.getElementById('logo').alt = cfg.marca.nome;
@@ -138,13 +166,7 @@
     btn.innerHTML = '<span class="spinner"></span> Enviando…';
 
     try {
-      const resp = await AppUrls.fetchApi('/api/avaliacoes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dados),
-      });
-      const json = await resp.json();
-      if (!resp.ok) throw new Error(json.erro || 'Erro ao enviar.');
+      await enviarAvaliacao(dados);
       window.location.href = AppUrls.page('obrigado');
     } catch (err) {
       btn.disabled = false;

@@ -138,6 +138,22 @@ CROSS_SITE_COOKIES=true
 
 Use `CROSS_SITE_COOKIES=true` somente com backend em HTTPS, pois cookies `SameSite=None` precisam ser seguros.
 
+### Usar Google Sheets no lugar da API
+
+Se quiser gravar as avaliaÃ§Ãµes direto em uma planilha, publique um Google Apps Script como Web App e cole a URL `/exec` em `public/js/site-settings.js`:
+
+```js
+window.POSVENDA_CONFIG = {
+  apiBaseUrl: '',
+  sheetsEndpoint: 'https://script.google.com/macros/s/SEU_ID/exec',
+  lojaConfig: {
+    // marca, lojas, vendedores e criterios usados pelo front estatico
+  },
+};
+```
+
+Nesse modo, a pÃ¡gina de avaliaÃ§Ã£o funciona no GitHub Pages sem VPS. O BI e login continuam dependendo de uma API prÃ³pria ou de uma futura integraÃ§Ã£o com a planilha.
+
 ---
 
 ## 🗄️ Modelo de dados (PostgreSQL)
