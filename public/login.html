@@ -36,8 +36,14 @@
     const form = document.getElementById('form');
     const aviso = document.getElementById('aviso');
     const btn = document.getElementById('btn');
+    if (!window.POSVENDA_CONFIG?.apiBaseUrl) {
+      aviso.textContent = 'Painel admin indisponivel no modo Google Sheets. O formulario de avaliacao continua funcionando normalmente.';
+      aviso.className = 'aviso erro';
+      btn.disabled = true;
+    }
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!window.POSVENDA_CONFIG?.apiBaseUrl) return;
       aviso.className = 'aviso';
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> Entrando…';
@@ -47,6 +53,10 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ senha: document.getElementById('senha').value }),
         });
+        const contentType = resp.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) {
+          throw new Error('Painel admin indisponivel: API nao configurada.');
+        }
         const json = await resp.json();
         if (!resp.ok) throw new Error(json.erro || 'Erro ao entrar.');
         window.location.href = AppUrls.page('loja');
