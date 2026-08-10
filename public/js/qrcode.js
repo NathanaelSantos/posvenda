@@ -4,6 +4,9 @@
 
   function urlDoQr(formato) {
     const alvo = $('url').value.trim() || AppUrls.siteRoot();
+    if (AppUrls.hasSheets && !AppUrls.hasApi) {
+      return `https://api.qrserver.com/v1/create-qr-code/?size=720x720&format=${formato}&data=${encodeURIComponent(alvo)}`;
+    }
     return AppUrls.api(`/api/qrcode?formato=${formato}&url=${encodeURIComponent(alvo)}`);
   }
 
@@ -30,7 +33,9 @@
 
     // Personaliza o cartaz com o nome/cidade configurados.
     try {
-      const cfg = await AppUrls.fetchApi('/api/config').then((r) => r.json());
+      const cfg = AppUrls.hasSheets && !AppUrls.hasApi
+        ? await AppUrls.sheetsJsonp('publicConfig')
+        : await AppUrls.fetchApi('/api/config').then((r) => r.json());
       $('cartazNome').textContent = cfg.marca.nome;
       $('cartazCidade').textContent = cfg.marca.cidade;
       document.querySelectorAll('.marca-logo').forEach((el) => {

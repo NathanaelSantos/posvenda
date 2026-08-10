@@ -36,18 +36,21 @@
     const form = document.getElementById('form');
     const aviso = document.getElementById('aviso');
     const btn = document.getElementById('btn');
-    if (!window.POSVENDA_CONFIG?.apiBaseUrl) {
-      aviso.textContent = 'Painel admin indisponivel no modo Google Sheets. O formulario de avaliacao continua funcionando normalmente.';
-      aviso.className = 'aviso erro';
-      btn.disabled = true;
-    }
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (!window.POSVENDA_CONFIG?.apiBaseUrl) return;
+      if (!AppUrls.hasApi && !AppUrls.hasSheets) return;
       aviso.className = 'aviso';
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> Entrando…';
       try {
+        if (AppUrls.hasSheets && !AppUrls.hasApi) {
+          const senha = document.getElementById('senha').value;
+          await AppUrls.sheetsJsonp('login', { senha });
+          AppUrls.setAdminToken(senha);
+          window.location.href = AppUrls.page('loja');
+          return;
+        }
+
         const resp = await AppUrls.fetchApi('/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

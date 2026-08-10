@@ -59,12 +59,17 @@
   <script src="js/auth-guard.js"></script>
   <script>
     document.getElementById('btnSair').addEventListener('click', async () => {
-      await AppUrls.fetchApi('/api/logout', { method: 'POST' });
+      if (AppUrls.hasSheets && !AppUrls.hasApi) {
+        AppUrls.clearAdminToken();
+      } else {
+        await AppUrls.fetchApi('/api/logout', { method: 'POST' });
+      }
       window.location.href = AppUrls.page('login');
     });
 
-    AppUrls.fetchApi('/api/config')
-      .then((r) => r.json())
+    (AppUrls.hasSheets && !AppUrls.hasApi
+      ? AppUrls.sheetsJsonp('publicConfig')
+      : AppUrls.fetchApi('/api/config').then((r) => r.json()))
       .then((cfg) => {
         document.getElementById('marcaSub').textContent =
           `${cfg.marca.nome} · ${cfg.marca.cidade}`;

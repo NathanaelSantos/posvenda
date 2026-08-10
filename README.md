@@ -140,7 +140,7 @@ Use `CROSS_SITE_COOKIES=true` somente com backend em HTTPS, pois cookies `SameSi
 
 ### Usar Google Sheets no lugar da API
 
-Se quiser gravar as avaliaÃ§Ãµes direto em uma planilha, publique um Google Apps Script como Web App e cole a URL `/exec` em `public/js/site-settings.js`:
+Se quiser gravar as avaliaÃ§Ãµes direto em uma planilha e tambÃ©m usar a Ãrea da Loja / BI, publique o Google Apps Script de `docs/google-apps-script.js` como Web App e cole a URL `/exec` em `public/js/site-settings.js`:
 
 ```js
 window.POSVENDA_CONFIG = {
@@ -152,7 +152,7 @@ window.POSVENDA_CONFIG = {
 };
 ```
 
-Nesse modo, a pÃ¡gina de avaliaÃ§Ã£o funciona no GitHub Pages sem VPS. O BI e login continuam dependendo de uma API prÃ³pria ou de uma futura integraÃ§Ã£o com a planilha.
+Nesse modo, a pÃ¡gina de avaliaÃ§Ã£o, login, Ãrea da Loja, BI e configuraÃ§Ãµes funcionam no GitHub Pages sem VPS.
 
 Use estes cabeÃ§alhos na planilha:
 
@@ -178,6 +178,22 @@ sheet.appendRow([
   body.telefone || '',
 ]);
 ```
+
+Para habilitar o painel:
+
+1. Abra a planilha no Google Sheets.
+2. Acesse **ExtensÃµes -> Apps Script**.
+3. Substitua o cÃ³digo pelo conteÃºdo de `docs/google-apps-script.js`.
+4. Ajuste `ADMIN_SECRET` no topo do script se quiser trocar a senha do painel.
+5. Clique em **Implantar -> Gerenciar implantaÃ§Ãµes -> Editar**.
+6. Crie uma nova versÃ£o e mantenha:
+
+```text
+Executar como: Eu
+Quem tem acesso: Qualquer pessoa
+```
+
+Depois disso, o login, a Ãrea da Loja, o BI, exportaÃ§Ã£o CSV e configuraÃ§Ã£o de lojas/vendedores passam a usar a planilha.
 
 ---
 

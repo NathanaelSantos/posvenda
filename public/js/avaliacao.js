@@ -59,6 +59,13 @@
 
   async function carregarConfig() {
     const cfgLocal = window.POSVENDA_CONFIG?.lojaConfig;
+    if (AppUrls.hasSheets && !AppUrls.hasApi) {
+      try {
+        return await AppUrls.sheetsJsonp('publicConfig');
+      } catch {
+        return cfgLocal;
+      }
+    }
     if (cfgLocal) return cfgLocal;
     return AppUrls.fetchApi('/api/config').then((r) => r.json());
   }

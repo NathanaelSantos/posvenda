@@ -7,6 +7,28 @@
   };
 
   async function api(url, opts) {
+    if (AppUrls.hasSheets && !AppUrls.hasApi) {
+      const token = AppUrls.adminToken();
+      const [path, qs = ''] = String(url).split('?');
+      const params = Object.fromEntries(new URLSearchParams(qs));
+
+      if (path === '/api/bi') {
+        const data = await AppUrls.sheetsJsonp('bi', { token, ...params });
+        return { ok: true, status: 200, json: async () => data };
+      }
+
+      if (path === '/api/admin/config' && (!opts || !opts.method || opts.method === 'GET')) {
+        const data = await AppUrls.sheetsJsonp('config', { token });
+        return { ok: true, status: 200, json: async () => data };
+      }
+
+      if (path === '/api/admin/config' && opts?.method === 'PUT') {
+        const config = JSON.parse(opts.body || '{}');
+        await AppUrls.sheetsPost('saveConfig', { config });
+        return { ok: true, status: 200, json: async () => config };
+      }
+    }
+
     const r = await AppUrls.fetchApi(url, opts);
     if (r.status === 401) { window.location.href = AppUrls.page('login'); throw new Error('sessao'); }
     return r;
@@ -250,9 +272,17 @@
   /* ---------------- Eventos ---------------- */
   async function iniciar() {
     const exportCsv = $('exportCsv');
-    if (exportCsv) exportCsv.href = AppUrls.api('/api/export.csv');
+    if (exportCsv) {
+      exportCsv.href = AppUrls.hasSheets && !AppUrls.hasApi
+        ? AppUrls.sheetsUrl('export', { token: AppUrls.adminToken() })
+        : AppUrls.api('/api/export.csv');
+    }
     ['fLoja', 'fVendedor', 'fPeriodo'].forEach((id) => $(id).addEventListener('change', carregar));
-    $('btnSair').addEventListener('click', async () => { await AppUrls.fetchApi('/api/logout', { method: 'POST' }); window.location.href = AppUrls.page('login'); });
+    $('btnSair').addEventListener('click', async () => {
+      if (AppUrls.hasSheets && !AppUrls.hasApi) AppUrls.clearAdminToken();
+      else await AppUrls.fetchApi('/api/logout', { method: 'POST' });
+      window.location.href = AppUrls.page('login');
+    });
     $('btnConfig').addEventListener('click', abrirConfig);
     $('fecharConfig').addEventListener('click', () => { $('modalConfig').style.display = 'none'; });
     $('modalConfig').addEventListener('click', (e) => { if (e.target === $('modalConfig')) $('modalConfig').style.display = 'none'; });
