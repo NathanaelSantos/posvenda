@@ -27,17 +27,23 @@ services:
     container_name: posvenda-backend
     restart: unless-stopped
     environment:
-      DATABASE_URL: postgres://${POSTGRES_USER:-posvenda}:${POSTGRES_PASSWORD:-posvenda}@db:5432/${POSTGRES_DB:-posvenda}
+      PGHOST: db
+      PGPORT: 5432
+      PGUSER: ${POSTGRES_USER:-posvenda}
+      PGPASSWORD: ${POSTGRES_PASSWORD:-posvenda}
+      PGDATABASE: ${POSTGRES_DB:-posvenda}
       PORT: 3000
       SERVE_STATIC: "false"
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-credmoveis}
       SESSION_SECRET: ${SESSION_SECRET:-troque-este-segredo-em-producao}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-}
+      CROSS_SITE_COOKIES: ${CROSS_SITE_COOKIES:-false}
     depends_on:
       db:
         condition: service_healthy
     # Porta interna; o front faz proxy. Exposta só se quiser testar a API direto.
     ports:
-      - "${BACKEND_PORT:-3000}:3000"
+      - "127.0.0.1:${BACKEND_PORT:-3000}:3000"
     healthcheck:
       test:
         [

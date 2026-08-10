@@ -9,14 +9,23 @@ export function getPool() {
   if (pool) return pool;
 
   const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) {
+  const host = process.env.PGHOST;
+  if (!connectionString && !host) {
     throw new Error(
       'DATABASE_URL não definida. Ex.: postgres://usuario:senha@localhost:5432/posvenda',
     );
   }
 
   pool = new Pool({
-    connectionString,
+    ...(connectionString
+      ? { connectionString }
+      : {
+          host,
+          port: Number(process.env.PGPORT || 5432),
+          user: process.env.PGUSER,
+          password: process.env.PGPASSWORD,
+          database: process.env.PGDATABASE,
+        }),
     max: Number(process.env.DB_POOL_MAX || 10),
     idleTimeoutMillis: 30_000,
   });
